@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Quản lý lịch trình</title>
+
+    <th:block th:insert="~{layout/layout::library}"/>
+
+    <!-- ICON -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+
+    <style>
+        body {
+            background: linear-gradient(135deg, #87cefa, #b0e0e6); /* Xanh trời bồng bềnh */
+            min-height: 100vh;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        .main-container {
+            background: #ffffff;
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+        }
+
+        h1 {
+            font-weight: 700;
+            color: #333;
+        }
+
+        .card-custom {
+            border: none;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+        }
+
+        .btn {
+            border-radius: 12px;
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+        }
+
+        .btn-success {
+            background: linear-gradient(45deg, #1cc88a, #17a673);
+            border: none;
+        }
+
+        .btn-primary {
+            background: linear-gradient(45deg, #4e73df, #224abe);
+            border: none;
+        }
+
+        .table thead {
+            background: linear-gradient(45deg, #4e73df, #224abe);
+            color: white;
+        }
+
+        .table tbody tr:hover {
+            background-color: #f1f3f9;
+            transition: 0.2s;
+        }
+
+        .action-group {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .form-control, .form-select {
+            border-radius: 10px;
+            padding: 10px;
+        }
+
+        .form-control:focus {
+            box-shadow: 0 0 0 0.2rem rgba(78,115,223,0.25);
+            border-color: #4e73df;
+        }
+
+        .header-box {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .badge-time {
+            font-size: 12px;
+            padding: 5px 10px;
+            border-radius: 20px;
+            background: #eef2ff;
+        }
+
+        @media (max-width: 768px) {
+            .header-box {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            /* Table chuyển sang dạng card cho mobile */
+            .table thead {
+                display: none;
+            }
+
+            .table tbody, .table tbody tr, .table tbody td {
+                display: block;
+                width: 100%;
+            }
+
+            .table tbody tr {
+                margin-bottom: 15px;
+                border-radius: 12px;
+                box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+                padding: 10px;
+                background: #fff;
+            }
+
+            .table tbody td {
+                text-align: right;
+                padding-left: 50%;
+                position: relative;
+                border: none;
+            }
+
+            .table tbody td::before {
+                content: attr(data-label);
+                position: absolute;
+                left: 15px;
+                width: calc(50% - 20px);
+                font-weight: bold;
+                text-align: left;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container py-4">
+    <div class="main-container">
+
+        <!-- HEADER -->
+        <div class="header-box">
+            <h1><i class="fa-solid fa-plane-departure"></i> Quản lý lịch trình</h1>
+            <a class="btn btn-success" href="/trips/add">
+                <i class="fa-solid fa-plus"></i> Tạo mới
+            </a>
+        </div>
+
+        <!-- SEARCH -->
+        <div class="card card-custom p-3 mb-4">
+            <form action="/trips">
+                <div class="row g-3">
+
+                    <div class="col-12 col-md-3">
+                        <input class="form-control" name="searchName" th:value="${searchName}" placeholder="🔍 Tìm tên..."/>
+                    </div>
+
+                    <div class="col-12 col-md-3">
+                        <input class="form-control" name="searchStartTime" type="datetime-local" th:value="${searchStartTime}"/>
+                    </div>
+
+                    <div class="col-12 col-md-3">
+                        <input class="form-control" name="searchEndTime" type="datetime-local" th:value="${searchEndTime}"/>
+                    </div>
+
+                    <div class="col-12 col-md-2">
+                        <select class="form-select" name="searchCategory">
+                            <option value="">📂 Thể loại</option>
+                            <option th:each="c:${categoryList}"
+                                    th:value="${c.name}"
+                                    th:text="${c.name}"></option>
+                        </select>
+                    </div>
+
+                    <div class="col-12 col-md-1 d-grid">
+                        <button class="btn btn-primary">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                        </button>
+                        <a class="btn btn-sm btn-secondary" href="/trips">
+                            ↩
+                        </a>
+                    </div>
+
+                </div>
+            </form>
+        </div>
+
+        <!-- TABLE -->
+        <div class="card card-custom p-3">
+            <div class="table-responsive">
+                <table class="table align-middle text-center">
+                    <thead>
+                    <tr>
+                        <th>Tên</th>
+                        <th>Địa điểm</th>
+                        <th>Thời gian</th>
+                        <th>Hành động</th>
+                    </tr>
+                    </thead>
+
+                    <tbody>
+                    <tr th:each="t:${tripDtoPage}">
+                        <td data-label="Tên" th:text="${t.name}"></td>
+                        <td data-label="Địa điểm"><i class="fa-solid fa-location-dot text-primary"></i> <span th:text="${t.location}"></span></td>
+                        <td data-label="Thời gian">
+                            <div class="badge-time">
+                                <div th:text="${t.startTime}"></div>
+                                →
+                                <div th:text="${t.endTime}"></div>
+                            </div>
+                        </td>
+                        <td data-label="Hành động">
+                            <div class="action-group">
+                                <a class="btn btn-sm btn-outline-secondary"
+                                   th:href="@{/trips/{id}/detail(id=${t.id})}">
+                                    <i class="fa-solid fa-eye"></i>
+                                </a>
+
+                                <a class="btn btn-sm btn-outline-primary"
+                                   th:href="@{/trips/{id}/update(id=${t.id})}">
+                                    <i class="fa-solid fa-pen"></i>
+                                </a>
+
+                                <button type="button"
+                                        class="btn btn-sm btn-outline-danger"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#deleteModal"
+                                        th:attr="data-id=${t.id}">
+                                    <i class="fa-solid fa-trash"></i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+
+                    <tr th:if="${tripDtoPage.isEmpty()}">
+                        <td colspan="4" class="text-danger">Không có dữ liệu</td>
+                    </tr>
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+
+
+<<div class="modal fade" id="deleteModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form th:action="@{/trips/delete}" method="post">
+                <div class="modal-header">
+                    <h5 class="modal-title">Xóa kế hoạch</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+
+                <div class="modal-body">
+                    <input type="hidden" name="id" id="deleteById"/>
+                    <span class="text-danger">Xác nhận hủy bỏ kế hoạch của bạn ?</span>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        Không
+                    </button>
+                    <button type="submit" class="btn btn-success">
+                        Xác nhận
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Modal success -->
+<div class="modal fade" id="successModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-success text-white">
+                <h5 class="modal-title">Success</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p th:text="${mess}"></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-success" data-bs-dismiss="modal">
+                    OK
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script th:if="${mess}">
+    window.addEventListener('DOMContentLoaded', function () {
+        var successModal = new bootstrap.Modal(
+            document.getElementById('successModal')
+        );
+        successModal.show();
+    });
+</script>
+</body>
+
+<script>
+    const deleteModal = document.getElementById('deleteModal');
+
+    deleteModal.addEventListener('show.bs.modal', function (event) {
+        const button = event.relatedTarget;
+        const id = button.getAttribute('data-id');
+        document.getElementById('deleteById').value = id;
+    });
+</script>
+</html>

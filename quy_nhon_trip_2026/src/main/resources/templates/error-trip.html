@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Thông báo lỗi</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: #f8d7da; /* màu đỏ lỗi dịu mắt */
+            font-family: 'Segoe UI', sans-serif;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0;
+        }
+
+        .error-card {
+            background: #fff;
+            padding: 30px 40px;
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+            max-width: 400px;
+            width: 90%;
+        }
+
+        .error-card h2 {
+            font-size: 1.8rem;
+            color: #721c24; /* đỏ thông báo lỗi */
+            margin-bottom: 15px;
+        }
+
+        .error-card p {
+            background: #f5c6cb;
+            color: #721c24;
+            padding: 10px 15px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            word-break: break-word;
+        }
+
+        .error-card a {
+            background: linear-gradient(45deg, #4e73df, #1cc88a);
+            color: #fff;
+            padding: 10px 20px;
+            border-radius: 12px;
+            text-decoration: none;
+            font-weight: 600;
+            display: inline-block;
+            transition: all 0.2s ease;
+        }
+
+        .error-card a:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+        }
+
+        @media (max-width: 768px) {
+            .error-card {
+                padding: 25px 20px;
+            }
+
+            .error-card h2 {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="error-card">
+    <h2><i class="fa-solid fa-triangle-exclamation"></i> Lỗi</h2>
+    <p th:text="${errorTrip}"></p>
+    <a href="/trips">Trở về</a>
+</div>
+</body>
+</html>

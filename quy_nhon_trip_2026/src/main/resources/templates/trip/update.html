@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Thay đổi kế hoạch</title>
+    <th:block th:insert="~{layout/layout::library}"/>
+
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(135deg, #87cefa, #b0e0e6); /* Xanh trời bồng bềnh */
+            font-family: 'Segoe UI', sans-serif;
+            min-height: 100vh;
+            padding: 20px 0;
+        }
+
+        .form-container {
+            max-width: 700px;
+            margin: auto;
+            background: #fff;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+        }
+
+        h1 {
+            text-align: center;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 30px;
+        }
+
+        .form-control, .form-select {
+            border-radius: 10px;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+
+        .form-control:focus {
+            box-shadow: 0 0 0 0.2rem rgba(78,115,223,0.25);
+            border-color: #4e73df;
+        }
+
+        .btn {
+            border-radius: 12px;
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+        }
+
+        .btn-success {
+            background: linear-gradient(45deg, #1cc88a, #17a673);
+            border: none;
+        }
+
+        .btn-danger {
+            background: linear-gradient(45deg, #e74a3b, #c0392b);
+            border: none;
+        }
+
+        @media (max-width: 768px) {
+            .form-container {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="form-container">
+    <h1><i class="fa-solid fa-pen-to-square"></i> Thay đổi kế hoạch</h1>
+
+    <form action="/trips/update" method="post" th:object="${trip}">
+        <input type="hidden" th:field="*{id}"/>
+
+        <div class="row g-3">
+            <div class="col-12">
+                <input class="form-control" th:field="*{name}" placeholder="Nhập tên món/địa danh"/>
+                <small class="text-danger" th:errors="*{name}"></small>
+            </div>
+
+            <div class="col-12 col-md-6">
+                <input class="form-control" type="number" th:field="*{price}" placeholder="Giá"/>
+                <small class="text-danger" th:errors="*{price}"></small>
+            </div>
+
+            <div class="col-12 col-md-6">
+                <input class="form-control" th:field="*{location}" placeholder="Địa điểm"/>
+                <small class="text-danger" th:errors="*{location}"></small>
+            </div>
+
+            <div class="col-12 col-md-6">
+                <input class="form-control" th:field="*{startTime}"/>
+                <small class="text-danger" th:errors="*{startTime}"></small>
+            </div>
+
+            <div class="col-12 col-md-6">
+                <input class="form-control" th:field="*{endTime}"/>
+                <small class="text-danger" th:errors="*{endTime}"></small>
+            </div>
+
+            <div class="col-12">
+                <select class="form-control" th:field="*{category}">
+                    <option value="">Chọn thể loại</option>
+                    <option th:each="c:${categoryList}" th:value="${c.id}" th:text="${c.name}"></option>
+                </select>
+                <small class="text-danger" th:errors="*{category}"></small>
+            </div>
+
+            <div class="col-12 d-grid">
+                <button class="btn btn-success">Lưu</button>
+            </div>
+
+            <div class="col-12 d-grid mt-2">
+                <a class="btn btn-danger" href="/trips">Hủy</a>
+            </div>
+        </div>
+    </form>
+</div>
+</body>
+</html>
