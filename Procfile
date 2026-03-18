@@ -1,1 +1,1 @@
-web: java -jar build/libs/quy_nhon_trip_2026-0.0.1-SNAPSHOT.jar
+web: java -jar build/libs/*.jar
