@@ -43,9 +43,16 @@ public class TripController {
                                LocalDateTime searchEndTime,
                            @RequestParam(name = "searchCategory",defaultValue = "")String searchCategory,
                            Model model){
-        Pageable pageable = PageRequest.of(page,3,Sort.by("start_time").descending());
+        Pageable pageable = PageRequest.of(page,3,Sort.by("start_time").ascending());
 
         Page<TripDto> tripDtoPage = tripService.search(searchName,searchStartTime,searchEndTime,searchCategory,pageable);
+
+        Long totalPrice = tripService.getTotalPrice(
+                searchName,
+                searchStartTime,
+                searchEndTime,
+                searchCategory
+        );
 
         model.addAttribute("tripDtoPage",tripDtoPage);
         model.addAttribute("categoryList",categoryService.getList());
@@ -53,6 +60,7 @@ public class TripController {
         model.addAttribute("searchStartTime",searchStartTime);
         model.addAttribute("searchEndTime",searchEndTime);
         model.addAttribute("searchCategory",searchCategory);
+        model.addAttribute("totalPrice", totalPrice);
         return "trip/list";
     }
 

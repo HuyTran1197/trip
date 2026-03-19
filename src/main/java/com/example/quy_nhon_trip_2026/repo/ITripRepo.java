@@ -41,12 +41,19 @@ public interface ITripRepo extends JpaRepository<Trip,Long> {
     int existsTimeOverlap(@Param("start") LocalDateTime start,
                           @Param("end") LocalDateTime end);
 
-//    @Query(value = "insert into trip(name,price,location,start_time,end_time,category_id) " +
-//            "values (:name,:price,:location,:start,:end,:category)",nativeQuery = true)
-//    boolean editTrip(@Param(("name"))String name,
-//                     @Param("price")Double price,
-//                     @Param("location")String location,
-//                     @Param("start")LocalDateTime start,
-//                     @Param("end")LocalDateTime end,
-//                     @Param("category")Integer categoryId);
+    @Query(value = """
+    SELECT COALESCE(SUM(t.price), 0)
+    FROM trip t
+    JOIN category c ON t.category_id = c.id
+    WHERE (:searchName is null OR t.name LIKE %:searchName%)
+      AND (:searchStartTime IS NULL OR t.end_time > :searchStartTime)
+      AND (:searchEndTime IS NULL OR t.start_time < :searchEndTime)
+      AND (:searchCategory is null OR c.name LIKE %:searchCategory%)
+""", nativeQuery = true)
+    Long getTotalPrice(
+            @Param("searchName") String searchName,
+            @Param("searchStartTime") LocalDateTime searchStartTime,
+            @Param("searchEndTime") LocalDateTime searchEndTime,
+            @Param("searchCategory") String searchCategory
+    );
 }

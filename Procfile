@@ -1,1 +1,1 @@
-web: java -jar build/libs/*.jar
+web: java -Dspring.profiles.active=heroku -jar build/libs/quy_nhon_trip_2026.jar

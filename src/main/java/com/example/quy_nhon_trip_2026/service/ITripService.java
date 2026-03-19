@@ -22,4 +22,11 @@ public interface ITripService {
     Trip findById(long id);
     boolean deleteById(long id);
     boolean editTrip(Trip trip);
+
+    Long getTotalPrice(
+            @Param("searchName") String searchName,
+            @Param("searchStartTime") LocalDateTime searchStartTime,
+            @Param("searchEndTime") LocalDateTime searchEndTime,
+            @Param("searchCategory") String searchCategory
+    );
 }

@@ -18,7 +18,7 @@
         }
 
         .main-container {
-            background: #ffffff;
+            background: #4C8F60;
             border-radius: 20px;
             padding: 20px;
             box-shadow: 0 15px 40px rgba(0,0,0,0.15);
@@ -149,7 +149,7 @@
         <!-- HEADER -->
         <div class="header-box">
             <h1><i class="fa-solid fa-plane-departure"></i> Quản lý lịch trình</h1>
-            <a class="btn btn-success" href="/trips/add">
+            <a class="btn btn-light" href="/trips/add">
                 <i class="fa-solid fa-plus"></i> Tạo mới
             </a>
         </div>
@@ -202,6 +202,7 @@
                         <th>Tên</th>
                         <th>Địa điểm</th>
                         <th>Thời gian</th>
+                        <th>Giá</th>
                         <th>Hành động</th>
                     </tr>
                     </thead>
@@ -216,6 +217,9 @@
                                 →
                                 <div th:text="${t.endTime}"></div>
                             </div>
+                        </td>
+                        <td data-label="Giá">
+                            <span th:text="${t.price} + ' 🐟'"></span>
                         </td>
                         <td data-label="Hành động">
                             <div class="action-group">
@@ -240,8 +244,43 @@
                         </td>
                     </tr>
 
-                    <tr th:if="${tripDtoPage.isEmpty()}">
-                        <td colspan="4" class="text-danger">Không có dữ liệu</td>
+                    <tr class="bg-light">
+                        <td colspan="4" class="text-end fw-bold text-success">
+                            Tổng: <span th:text="${totalPrice}"></span> 🐟
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="5">
+                            <p class="text-danger" th:if="${tripDtoPage.isEmpty()}">Không có dữ liệu !!!</p>
+                            <a class="btn btn-sm btn-primary"
+                               th:if="${tripDtoPage.hasPrevious()}"
+                               th:href="@{/trips(
+        page=${tripDtoPage.number -1},
+        searchName=${searchName},
+        searchStartTime=${searchStartTime},
+        searchEndTime=${searchEndTime},
+        searchCategory=${searchCategory}
+   )}">
+                                <
+                            </a>
+
+                            <span class="fw-bold">
+                    Page <span th:text="${tripDtoPage.number +1}"></span> /
+                    <span th:text="${tripDtoPage.totalPages}"></span>
+                </span>
+
+                            <a class="btn btn-sm btn-dark"
+                               th:if="${tripDtoPage.hasNext()}"
+                               th:href="@{/trips(
+        page=${tripDtoPage.number +1},
+        searchName=${searchName},
+        searchStartTime=${searchStartTime},
+        searchEndTime=${searchEndTime},
+        searchCategory=${searchCategory}
+   )}">
+                                >
+                            </a>
+                        </td>
                     </tr>
 
                     </tbody>

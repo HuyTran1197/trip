@@ -70,5 +70,10 @@ public class TripService implements ITripService {
         return false;
     }
 
+    @Override
+    public Long getTotalPrice(String searchName, LocalDateTime searchStartTime, LocalDateTime searchEndTime, String searchCategory) {
+        return tripRepo.getTotalPrice(searchName, searchStartTime, searchEndTime, searchCategory);
+    }
+
 
 }

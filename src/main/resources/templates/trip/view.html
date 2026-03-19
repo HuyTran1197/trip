@@ -82,7 +82,7 @@
 
                 <p><i class="fa-solid fa-tag"></i> Loại: <span th:text="${trip.category.name}"></span></p>
                 <p><i class="fa-solid fa-utensils"></i> Tên món/địa danh: <span th:text="${trip.name}"></span></p>
-                <p><i class="fa-solid fa-money-bill-wave"></i> Giá: <span th:text="${trip.price}"></span> VNĐ</p>
+                <p><i class="fa-solid fa-money-bill-wave"></i> Giá: <span th:text="${trip.price} + ' 🐟'"></span></p>
                 <p><i class="fa-solid fa-location-dot"></i> Địa điểm: <span th:text="${trip.location}"></span></p>
                 <p><i class="fa-solid fa-arrow-right-long"></i> Xuất phát: <span th:text="${trip.startTime}"></span></p>
                 <p><i class="fa-solid fa-flag-checkered"></i> Kết thúc: <span th:text="${trip.endTime}"></span></p>
